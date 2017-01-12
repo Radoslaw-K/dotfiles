@@ -2,7 +2,7 @@
 
 ### Setup
 
-Run the master installer using this command:
+Load the installers using this command:
 
 `git clone -b ubuntu https://github.com/Radoslaw-K/dotfiles && cd dotfiles/ && source installwizard.bash`
 
