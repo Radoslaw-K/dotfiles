@@ -4,35 +4,6 @@
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 cd "$PARENT_PATH"
 
-install_dummy()
-{
-while [[ $# -gt 1 ]]
-do
-   key="$1"
-  
-  case $key in
-         -e|--extension)
-                EXTENSION="$2"
-                   shift # past argument
-                      ;;
-                         -s|--searchpath)
-                                SEARCHPATH="$2"
-                                   shift # past argument
-                                      ;;
-                                         -l|--lib)
-                                                LIBPATH="$2"
-                                                   shift # past argument
-                                                      ;;
-                                                         --default)
-                                                                DEFAULT=YES
-                                                                   ;;
-                                                                      *)
-                                                                                     # unknown option
-                                                                                        ;;
-                                                                                esac
-                                                                               shift # past argument or value
-                                                                           done ]]
-}
 
 install_vim()
 {
