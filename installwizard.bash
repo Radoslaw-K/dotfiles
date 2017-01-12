@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# TO DO - Add --help for each installer to display the list of
+# packages that will be installed and their description.
+
+# Get the name of this script
+SCRIPT_NAME=$(basename $0)
+
 # Allow for relative paths
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 cd "$PARENT_PATH"
@@ -116,19 +122,26 @@ cat ../dotfiles/dependencies/bashrc_commands.extras >> /home/$USER/.bashrc
 
 install_all()
 {
-install_general
-install_extras
-install_python_tools
-install_build_tools
-install_sqlite3
-install_git
-install_vim
-install_prompt_strings
-install_bashrc_extras
+# TODO - Generate this list automatically
+#install_general
+#install_extras
+#install_python_tools
+#install_build_tools
+#install_sqlite3
+#install_git
+#install_vim
+#install_prompt_strings
+#install_bashrc_extras
 }
 
 
 ##################################    MAIN   ###############################################
+func_list_raw=$(typeset -F | grep install_)
+str_old="declare -f "
+str_new=" "
+func_list_raw="${func_list_raw//$str_old/$str_new}"
+func_list=$(echo $func_list_raw | tr " " "\n")
+
 
 if [ $USER == "root" ]; then
     echo "[ERROR] Not allowed to run script as: $USER. Please log in as a different user."
@@ -136,23 +149,26 @@ if [ $USER == "root" ]; then
 fi
 
 
-# TO DO - Add --help for each installer to display the list of
-# packages that will be installed and their description.
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+echo "
+--------------------------------------------------------------------
+Script ${BASH_SOURCE[0]} has been loaded into bash.
+"
+
+else
 
 echo "
-Usage: 
-source apps.bash
-install_<installer>
-
-Available installers:
-all
-git
-vim
-prompt_strings
-general
-sqlite3
-extras
-python_tools
-build_tools
-bashrc_extras
+--------------------------------------------------------------------
+Load the script using command below:
+source ${0}
 "
+fi
+
+
+echo "
+--------------------------------------------------------------------
+Available installation commands:
+
+$(printf "$func_list")
+"
+
