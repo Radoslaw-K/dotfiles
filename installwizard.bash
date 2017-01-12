@@ -3,8 +3,6 @@
 # TO DO - Add --help for each installer to display the list of
 # packages that will be installed and their description.
 
-# Get the name of this script
-SCRIPT_NAME=$(basename $0)
 
 # Allow for relative paths
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
@@ -135,7 +133,7 @@ install_all()
 }
 
 
-##################################    MAIN   ###############################################
+# --------------------------------------------- MAIN --------------------------------------------- #
 func_list_raw=$(typeset -F | grep install_)
 str_old="declare -f "
 str_new=" "
