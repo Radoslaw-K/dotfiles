@@ -151,6 +151,12 @@ echo "
 --------------------------------------------------------------------
 Script ${BASH_SOURCE[0]} has been loaded into bash.
 "
+echo "
+--------------------------------------------------------------------
+Available installation commands:
+
+$(printf "$func_list")
+"
 
 else
 
@@ -160,12 +166,3 @@ Load the script using command below:
 source ${0}
 "
 fi
-
-
-echo "
---------------------------------------------------------------------
-Available installation commands:
-
-$(printf "$func_list")
-"
-
