@@ -22,7 +22,7 @@ sudo apt-get install -y vim
 echo "[$FUNCNAME] Configuring vim..."
 cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
 printf "\n\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/dotfiles/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
+cat $PARENT_PATH/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
 
 echo "[$FUNCNAME] Setting up vim plugins..."
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -116,7 +116,7 @@ install_bashrc_extras()
 {
 echo "[$FUNCNAME] Installing custom bash commands..."
 printf "\n\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/dotfiles/includes/bashrc_commands.extra >> /home/$USER/.bashrc
+cat $PARENT_PATH/includes/bashrc_commands.extra >> /home/$USER/.bashrc
 }
 
 
