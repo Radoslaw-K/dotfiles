@@ -20,9 +20,9 @@ fi
 sudo apt-get install -y vim
 
 echo "[$FUNCNAME] Configuring vim..."
-cp ../dotfiles/.vimrc /home/$USER/
+cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
 printf "\n\n" >> /home/$USER/.bashrc
-cat ../dotfiles/dependencies/bashrc_vimrc.update >> /home/$USER/.bashrc
+cat $PARENT_PATH/dotfiles/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
 
 echo "[$FUNCNAME] Setting up vim plugins..."
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -57,7 +57,7 @@ install_sqlite3()
 sudo apt-get install -y sqlite3
 
 echo "[$FUNCNAME] Configuring sqlite3..."
-cp ../dotfiles/.sqliterc /home/$USER/
+cp $PARENT_PATH/dotfiles/.sqliterc /home/$USER/
 }
 
 
@@ -116,7 +116,7 @@ install_bashrc_extras()
 {
 echo "[$FUNCNAME] Installing custom bash commands..."
 printf "\n\n" >> /home/$USER/.bashrc
-cat ../dotfiles/dependencies/bashrc_commands.extras >> /home/$USER/.bashrc
+cat $PARENT_PATH/dotfiles/includes/bashrc_commands.extra >> /home/$USER/.bashrc
 }
 
 
