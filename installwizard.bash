@@ -118,8 +118,8 @@ cat ../dotfiles/dependencies/bashrc_commands.extras >> /home/$USER/.bashrc
 }
 
 
-install_all()
-{
+#install_all()
+#{
 # TODO - Generate this list automatically
 #install_general
 #install_extras
@@ -130,15 +130,14 @@ install_all()
 #install_vim
 #install_prompt_strings
 #install_bashrc_extras
-}
+#}
 
 
 # --------------------------------------------- MAIN --------------------------------------------- #
 func_list_raw=$(typeset -F | grep install_)
 str_old="declare -f "
-str_new=" "
-func_list_raw="${func_list_raw//$str_old/$str_new}"
-func_list=$(echo $func_list_raw | tr " " "\n")
+str_new=""
+func_list="${func_list_raw//$str_old/$str_new}"
 
 
 if [ $USER == "root" ]; then
