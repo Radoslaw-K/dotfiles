@@ -12,31 +12,31 @@ cd "$PARENT_PATH"
 install_vim()
 {
 curlcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
+
 if [ $curlcheck != "curl" ]; then 
     sudo apt-get install -y curl
 fi
 
 sudo apt-get install -y vim
 
-echo "Adding custom config for vim"
+echo "[$FUNCNAME] Configuring vim..."
 cp ../dotfiles/.vimrc /home/$USER/
-
-echo "Updating .bashrc for vim"
 printf "\n\n" >> /home/$USER/.bashrc
 cat ../dotfiles/dependencies/bashrc_vimrc.update >> /home/$USER/.bashrc
 
-echo "Downloading plugin installer for vim"
+echo "[$FUNCNAME] Setting up vim plugins..."
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-echo "Starting the installation of vim plugins"
 vim +PlugInstall +qall
 }
 
 
 install_git()
 {
+vimcheck=$(vim --version | head -n 1 | tr " " "\n" | head -n 1)
+
 sudo apt-get install -y git
 
+echo "[$FUNCNAME] Configuring git..."
 git config --global user.name Radoslaw Kieltyka
 git config --global user.email rkieltyka@dataplicity.com
 git config credential.helper 'cache --timeout=9000'
@@ -46,7 +46,6 @@ git remote add wf-specialproj-priv https://github.com/wildfoundry/specialproject
 git remote add wf-wfos https://github.com/wildfoundry/wf-os
 git remote add rados https://github.com/Radoslaw-K/rados
 
-vimcheck=$(vim --version | head -n 1 | tr " " "\n" | head -n 1)
 if [ $vimcheck == "VIM" ]; then 
     git config --global core.editor vim
 fi
@@ -55,10 +54,9 @@ fi
 
 install_sqlite3()
 {
-echo "Installing sqlite3 package"
 sudo apt-get install -y sqlite3
 
-echo "Adding custom config for sqlite3 package"
+echo "[$FUNCNAME] Configuring sqlite3..."
 cp ../dotfiles/.sqliterc /home/$USER/
 }
 
@@ -90,29 +88,33 @@ sudo apt-get -y install tree httpie terminator silversearcher-ag strace screen i
 
 install_prompt_strings()
 {
-
 teecheck=$(tee --version | head -n 1 | tr " " "\n" | head -n 1)
+gitcheck=$(git --version | head -n 1 | tr " " "\n" | head -n 1)
+
 if [ $teecheck != "tee" ]; then 
     sudo apt-get install -y tee
 fi
 
-gitcheck=$(git --version | head -n 1 | tr " " "\n" | head -n 1)
 if [ $gitcheck == "git" ]; then
     user_ps_command="export PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w $(__git_ps1 " <%s>") \$\[\033[00m\] '"
 else
+    echo "[$FUNCNAME] Git not found on the system, will not be part of the string..."
     user_ps_command="export PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] '"
 fi
 
-
 root_ps_command="export PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[1;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w #\[\033[00m\] '"
 
+echo "[$FUNCNAME] Installing prompt string for user: $USER..."
 echo $user_ps_command >> /home/$USER/.bashrc
+
+echo "[$FUNCNAME] Installing prompt string for user: root..."
 echo $root_ps_command | sudo tee --append /root/.bashrc > /dev/null
 }
 
 
 install_bashrc_extras()
 {
+echo "[$FUNCNAME] Installing custom bash commands..."
 printf "\n\n" >> /home/$USER/.bashrc
 cat ../dotfiles/dependencies/bashrc_commands.extras >> /home/$USER/.bashrc
 }
@@ -141,8 +143,12 @@ func_list="${func_list_raw//$str_old/$str_new}"
 
 
 if [ $USER == "root" ]; then
-    echo "[ERROR] Not allowed to run script as: $USER. Please log in as a different user."
-    exit 0
+echo "
+--------------------------------------------------------------------
+[ERROR] Not allowed to run the script as: $USER. 
+Please log in as a different user.
+"
+exit 0
 fi
 
 
