@@ -12,6 +12,6 @@ Load the installers using this command. Further instructions will be given in te
 
 ### Possible problems
 
-When running on LXD containers, SSL certificate issues may arise when cloning git branch, this is solved by running (otherwise skip this step):
+When running on LXD containers, SSL certificate issues may arise when cloning git branch, this is solved by running:
 
 `git config --global http.sslVerify false`
