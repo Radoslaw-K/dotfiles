@@ -13,7 +13,7 @@ install_vim()
 {
 curlcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
 
-if [ $curlcheck != "curl" ]; then 
+if [ -z $curlcheck ]; then 
     sudo apt-get install -y curl
 fi
 
@@ -94,7 +94,7 @@ install_prompt_strings()
 teecheck=$(tee --version | head -n 1 | tr " " "\n" | head -n 1)
 gitcheck=$(git --version | head -n 1 | tr " " "\n" | head -n 1)
 
-if [ $teecheck != "tee" ]; then 
+if [ -z $teecheck ]; then 
     sudo apt-get install -y tee
 fi
 
