@@ -13,8 +13,8 @@ call plug#end()
 
 " Colours!
 syntax on
-colorscheme gruvbox
-set background=dark
+" colorscheme gruvbox
+" set background=dark
 
 " Show line numbers
 set number
