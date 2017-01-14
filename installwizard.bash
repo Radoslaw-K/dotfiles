@@ -12,9 +12,14 @@ cd "$PARENT_PATH"
 install_vim()
 {
 curlcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
+sedcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
 
 if [ -z $curlcheck ]; then 
     sudo apt-get install -y curl
+fi
+
+if [ -z $sedcheck]; then 
+    sudo apt-get install -y sed
 fi
 
 sudo apt-get install -y vim
