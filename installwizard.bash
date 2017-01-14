@@ -18,7 +18,7 @@ if [ -z $curlcheck ]; then
     sudo apt-get install -y curl
 fi
 
-if [ -z $sedcheck]; then 
+if [ -z $sedcheck ]; then 
     sudo apt-get install -y sed
 fi
 
