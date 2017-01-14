@@ -2,11 +2,11 @@
 
 ### Setup
 
-Some versions of ubuntu don't have git installed by defualt, install using:
+Some versions of ubuntu don't have git installed by default, install using:
 
 `sudo apt-get install -y git`
 
-Load the installers using this command:
+Load the installers using this command. Further instructions will be given in terminal emulator window:
 
 `git clone -b ubuntu https://github.com/Radoslaw-K/dotfiles && cd dotfiles/ && source installwizard.bash`
 
