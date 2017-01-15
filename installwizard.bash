@@ -88,6 +88,8 @@ sudo apt-get install -y bison libtool build-essential autotools-dev automake zli
 
 install_python_tools()
 {
+sudo apt-get install -y python-dev
+sudo apt-get install -y python3-dev
 sudo apt-get install -y python-pip
 sudo pip install flake8 coverage ipython pexpect
 }
