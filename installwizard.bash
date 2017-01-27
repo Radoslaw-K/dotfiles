@@ -11,8 +11,8 @@ cd "$PARENT_PATH"
 
 install_vim()
 {
-curlcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
-sedcheck=$(sed --version | head -n 1 | tr " " "\n" | head -n 1)
+curlcheck=$(curl --version 2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+sedcheck=$(sed --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 
 if [ -z $curlcheck ]; then 
     sudo apt-get install -y curl
@@ -40,8 +40,8 @@ sed -i '17s/" //' /home/$USER/.vimrc
 
 install_git()
 {
-vimcheck=$(vim --version | head -n 1 | tr " " "\n" | head -n 1)
-curlcheck=$(curl --version | head -n 1 | tr " " "\n" | head -n 1)
+vimcheck=$(vim --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+curlcheck=$(curl --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 
 if [ -z $curlcheck ]; then 
     sudo apt-get install -y curl
@@ -113,8 +113,8 @@ USER_GIT_PS_LOCATION=8
 USER_PS_LOCATION=11
 ROOT_PS_LOCATION=14
 
-teecheck=$(tee --version | head -n 1 | tr " " "\n" | head -n 1)
-gitcheck=$(git --version | head -n 1 | tr " " "\n" | head -n 1)
+teecheck=$(tee --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+gitcheck=$(git --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 
 if [ -z $teecheck ]; then 
     sudo apt-get install -y tee
