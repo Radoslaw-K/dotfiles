@@ -8,7 +8,7 @@ Some versions of ubuntu don't have git installed by default, install using:
 
 Load the installers using this command. Further instructions will be given in terminal emulator window:
 
-`git clone -b ubuntu https://github.com/Radoslaw-K/dotfiles && cd dotfiles/ && source installwizard.bash`
+`git clone https://github.com/Radoslaw-K/dotfiles && source dotfiles/installwizard.bash`
 
 ### Possible problems
 
