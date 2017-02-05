@@ -144,55 +144,112 @@ cat $PARENT_PATH/includes/bashrc_commands.extra >> /home/$USER/.bashrc
 }
 
 
-#install_all()
-#{
-# TODO - Generate this list automatically
-#install_general
-#install_extras
-#install_python_tools
-#install_build_tools
-#install_sqlite3
-#install_git
-#install_vim
-#install_prompt_strings
-#install_bashrc_extras
-#}
+script_help()
+{
+echo "------------------------------------------------------------------------------------
+Usage:
+    ${0} [OPTIONS]
+    ** See below for available options **
+OR
+    source ${0}
+    ** Available commands will be printed after the script is sourced **
 
 
-# --------------------------------------------- MAIN --------------------------------------------- #
+Available OPTIONS:
+    --all
+    --bashrc_extras
+    --build_tools
+    --extras
+    --general
+    --git
+    --prompt_strings
+    --python_tools
+    --sqlite3
+    --vim
+    --help
+"
+}
+
+
+script_list_functions()
+{
 func_list_raw=$(typeset -F | grep install_)
 str_old="declare -f "
 str_new=""
 func_list="${func_list_raw//$str_old/$str_new}"
+printf "$func_list\n"
+}
 
 
+script_check_root()
+{
 if [ $USER == "root" ]; then
-echo "
---------------------------------------------------------------------
-[ERROR] Not allowed to run the script as: $USER. 
-Please log in as a different user.
-"
+echo "------------------------------------------------------------------------------------
+[ERROR]
+    Not allowed to run the script as: $USER.
+    Please log in as a different user."
 exit 0
 fi
+}
 
+
+
+
+
+# ---------------------------------------- MAIN ---------------------------------------- #
+
+script_check_root
 
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
-echo "
---------------------------------------------------------------------
+
+echo "------------------------------------------------------------------------------------
 Script ${BASH_SOURCE[0]} has been loaded into bash.
-"
-echo "
---------------------------------------------------------------------
+
 Available installation commands:
 
-$(printf "$func_list")
-"
+$(script_list_functions)"
 
 else
 
-echo "
---------------------------------------------------------------------
-Load the script using command below:
-source ${0}
-"
+case $1 in
+    --all)
+#        $(script_list_functions)
+#        bash -c "source ${0} &&  $(script_list_functions)"
+        echo "This option has not been implemented yet."
+        ;;
+    --bashrc_extras)
+        install_bashrc_extras
+        ;;
+    --build_tools)
+        install_build_tools
+        ;;
+    --extras)
+        install_extras
+        ;;
+    --general)
+        install_general
+        ;;
+    --git)
+        install_git
+        ;;
+    --prompt_strings)
+        install_prompt_strings
+        ;;
+    --python_tools)
+        install_python_tools
+        ;;
+    --sqlite3)
+        install_sqlite3
+        ;;
+    --vim)
+        install_vim
+        ;;
+    --help)
+        script_help
+        ;;
+    *)
+        script_help
+        exit 1
+esac
+
 fi
