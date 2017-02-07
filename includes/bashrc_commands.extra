@@ -1,3 +1,5 @@
+### bashrc extra commands {
+
 # Use "cdt" command to change directory and show its tree
 cdt() 
 {
@@ -5,3 +7,5 @@ cd $1
 pwd
 tree -L 1
 }
+
+### } bashrc extra commands

@@ -272,10 +272,23 @@ case $1 in
 esac
 fi
 
+already_installed_beg=$(grep "### bashrc extra commands {" /home/$USER/.bashrc) 
+already_installed_end=$(grep "### } bashrc extra commands" /home/$USER/.bashrc) 
+
+if [[ ${already_installed_beg} && ${already_installed_end} ]]; then
+echo "[$FUNCNAME] Already installed..."
+exit 0
+# Add else to check for either one being true which would indicate
+# something fishy going on
+fi
+
 
 echo "[$FUNCNAME] Installing custom bash commands..."
 printf "\n" >> /home/$USER/.bashrc
 cat $PARENT_PATH/includes/bashrc_commands.extra >> /home/$USER/.bashrc
+
+# uninstall -
+# sed -i '/### bashrc extra commands {/,/### }/d' ../.bashrc
 }
 
 
