@@ -259,6 +259,8 @@ cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $ROOT_PS_LOCATION | tail
 install_bashrc_extras()
 {
 
+FILE="bashrc_commands.extra"
+
 if [[ $# -eq 1 ]]; then
 case $1 in
     -h | --help)
@@ -272,12 +274,12 @@ case $1 in
 esac
 fi
 
-already_installed_beg=$(grep "### bashrc extra commands {" /home/$USER/.bashrc) 
-already_installed_end=$(grep "### } bashrc extra commands" /home/$USER/.bashrc) 
+already_installed_beg=$(grep "### $FILE {" /home/$USER/.bashrc) 
+already_installed_end=$(grep "### } $FILE" /home/$USER/.bashrc) 
 
 if [[ ${already_installed_beg} && ${already_installed_end} ]]; then
 echo "[$FUNCNAME] Already installed..."
-exit 0
+return 0
 # Add else to check for either one being true which would indicate
 # something fishy going on
 fi
@@ -285,7 +287,7 @@ fi
 
 echo "[$FUNCNAME] Installing custom bash commands..."
 printf "\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/includes/bashrc_commands.extra >> /home/$USER/.bashrc
+sed s/THIS_FILENAME/$FILE/g  $PARENT_PATH/includes/$FILE >> /home/$USER/.bashrc
 
 # uninstall -
 # sed -i '/### bashrc extra commands {/,/### }/d' ../.bashrc

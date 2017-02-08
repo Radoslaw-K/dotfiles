@@ -1,4 +1,4 @@
-### bashrc extra commands {
+### THIS_FILENAME {
 
 # Use "cdt" command to change directory and show its tree
 cdt() 
@@ -8,4 +8,4 @@ pwd
 tree -L 1
 }
 
-### } bashrc extra commands
+### } THIS_FILENAME
