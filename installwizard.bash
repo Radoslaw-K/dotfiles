@@ -256,41 +256,112 @@ cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $ROOT_PS_LOCATION | tail
 }
 
 
+check_is_installed()
+{
+FUNCTION=$1
+FILE=$2
+DESTINATION=$3
+
+beg=$(grep "### $FILE {" $DESTINATION) 
+end=$(grep "### } $FILE" $DESTINATION) 
+
+if [[ ${beg} && ${end} ]]; then
+    echo "[$FUNCTION] Already installed..."
+    return 1
+elif [[ (${beg} && ! ${end}) || (! ${beg} && ${end}) ]]; then
+    echo "[$FUNCTION] Previously installed but now in broken state..."
+    echo ""
+    echo "[ERROR]"
+    echo "    One of the positional markers below is missing inside \"$DESTINATION\":"
+    echo "    \"### $FILE {\""
+    echo "    \"### } $FILE\""
+    return 1
+else
+    return 0
+    fi
+}
+
+
+check_uninstall()
+{
+FUNCTION=$1
+FILE=$2
+DESTINATION=$3
+
+beg=$(grep "### $FILE {" $DESTINATION) 
+end=$(grep "### } $FILE" $DESTINATION) 
+
+if [[ ${beg} && ${end} ]]; then
+    return 0
+elif [[ (${beg} && ! ${end}) || (! ${beg} && ${end}) ]]; then
+    echo "[$FUNCTION] Previously installed but now in broken state..."
+    echo ""
+    echo "[ERROR]"
+    echo "    One of the positional markers below is missing inside \"$DESTINATION\":"
+    echo "    \"### $FILE {\""
+    echo "    \"### } $FILE\""
+    return 1
+else
+    echo "[$FUNCTION] Not installed previously..."
+    return 1
+    fi
+}
+
+
 install_bashrc_extras()
 {
 
 FILE="bashrc_commands.extra"
+DESTINATION="/home/$USER/.bashrc"
 
-if [[ $# -eq 1 ]]; then
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
+
 case $1 in
+    -i | --install)
+        check_is_installed $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
+
+        echo "[$FUNCNAME] Installing custom bash commands..."
+        printf "\n" >> $DESTINATION
+        sed s/THIS_FILENAME/$FILE/g  $PARENT_PATH/includes/$FILE >> $DESTINATION
+        ;;
+
+    -u | --uninstall)
+        check_uninstall $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
+
+        echo "[$FUNCNAME] Uninstalling custom bash commands..."
+        sed -i '/### '"$FILE"' {/,/### } '"$FILE"'/d' $DESTINATION
+        if [[ -z $(tail -n 1 $DESTINATION) ]]; then
+            sed -i '$ d' $DESTINATION
+            fi
+        ;;
+
     -h | --help)
-        echo this is bla
-	exit 0
+        echo "This function installs custom commands found in $FILE to ~/.bashrc"
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        return 0
         ;;
+
     *)
-        echo incorrect arg
-        exit 1
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
         ;;
-esac
-fi
 
-already_installed_beg=$(grep "### $FILE {" /home/$USER/.bashrc) 
-already_installed_end=$(grep "### } $FILE" /home/$USER/.bashrc) 
-
-if [[ ${already_installed_beg} && ${already_installed_end} ]]; then
-echo "[$FUNCNAME] Already installed..."
-return 0
-# Add else to check for either one being true which would indicate
-# something fishy going on
-fi
-
-
-echo "[$FUNCNAME] Installing custom bash commands..."
-printf "\n" >> /home/$USER/.bashrc
-sed s/THIS_FILENAME/$FILE/g  $PARENT_PATH/includes/$FILE >> /home/$USER/.bashrc
-
-# uninstall -
-# sed -i '/### bashrc extra commands {/,/### }/d' ../.bashrc
+    esac
 }
 
 
