@@ -9,6 +9,8 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 cd "$PARENT_PATH"
 
 
+# --------------------------------------------------------- INSTALLATION SUB FUNCTIONS ----
+
 check_is_installed()
 {
 FUNCTION=$1
@@ -58,6 +60,31 @@ else
     echo "[$FUNCTION] Not installed previously..."
     return 1
     fi
+}
+
+
+# ------------------------------------------------------------ INSTALLATION FUNCTIONS ----
+
+install_all()
+{
+
+if [[ $# -eq 1 ]]; then
+case $1 in
+    -h | --help)
+        echo this is bla
+	exit 0
+        ;;
+    *)
+        echo incorrect arg
+        exit 1
+        ;;
+esac
+fi
+
+
+# $(script_list_functions)
+# bash -c "source ${0} &&  $(script_list_functions)"
+echo "This option has not been implemented yet. $2"
 }
 
 
@@ -179,7 +206,9 @@ esac
 
 
 }
-install_vim()
+
+
+install_extras()
 {
 
 if [[ $# -eq 1 ]]; then
@@ -196,30 +225,28 @@ esac
 fi
 
 
-curlcheck=$(curl --version 2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
-sedcheck=$(sed --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+sudo apt-get install -y cmatrix redshift
+}
 
-if [ -z $curlcheck ]; then 
-    sudo apt-get install -y curl
+
+install_general()
+{
+
+if [[ $# -eq 1 ]]; then
+case $1 in
+    -h | --help)
+        echo this is bla
+	exit 0
+        ;;
+    *)
+        echo incorrect arg
+        exit 1
+        ;;
+esac
 fi
 
-if [ -z $sedcheck ]; then 
-    sudo apt-get install -y sed
-fi
 
-sudo apt-get install -y vim
-
-echo "[$FUNCNAME] Configuring vim..."
-cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
-printf "\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
-
-echo "[$FUNCNAME] Setting up vim plugins..."
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-vim +PlugInstall +qall
-
-sed -i '16s/" //' /home/$USER/.vimrc
-sed -i '17s/" //' /home/$USER/.vimrc
+sudo apt-get -y install tree httpie terminator silversearcher-ag strace screen inotify-tools
 }
 
 
@@ -271,97 +298,6 @@ fi
 }
 
 
-install_sqlite3()
-{
-
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
-
-sudo apt-get install -y sqlite3
-
-echo "[$FUNCNAME] Configuring sqlite3..."
-cp $PARENT_PATH/dotfiles/.sqliterc /home/$USER/
-}
-
-
-
-install_python_tools()
-{
-
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
-
-sudo apt-get install -y python-dev
-sudo apt-get install -y python3-dev
-sudo apt-get install -y python-pip
-sudo pip install flake8 coverage ipython pexpect
-}
-
-
-install_extras()
-{
-
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
-
-sudo apt-get install -y cmatrix redshift
-}
-
-
-install_general()
-{
-
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
-
-sudo apt-get -y install tree httpie terminator silversearcher-ag strace screen inotify-tools
-}
-
-
 install_prompt_strings()
 {
 
@@ -406,11 +342,7 @@ cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $ROOT_PS_LOCATION | tail
 }
 
 
-
-
-
-
-install_all()
+install_python_tools()
 {
 
 if [[ $# -eq 1 ]]; then
@@ -427,11 +359,82 @@ esac
 fi
 
 
-# $(script_list_functions)
-# bash -c "source ${0} &&  $(script_list_functions)"
-echo "This option has not been implemented yet. $2"
+sudo apt-get install -y python-dev
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python-pip
+sudo pip install flake8 coverage ipython pexpect
 }
 
+
+install_sqlite3()
+{
+
+if [[ $# -eq 1 ]]; then
+case $1 in
+    -h | --help)
+        echo this is bla
+	exit 0
+        ;;
+    *)
+        echo incorrect arg
+        exit 1
+        ;;
+esac
+fi
+
+
+sudo apt-get install -y sqlite3
+
+echo "[$FUNCNAME] Configuring sqlite3..."
+cp $PARENT_PATH/dotfiles/.sqliterc /home/$USER/
+}
+
+
+install_vim()
+{
+
+if [[ $# -eq 1 ]]; then
+case $1 in
+    -h | --help)
+        echo this is bla
+	exit 0
+        ;;
+    *)
+        echo incorrect arg
+        exit 1
+        ;;
+esac
+fi
+
+
+curlcheck=$(curl --version 2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+sedcheck=$(sed --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
+
+if [ -z $curlcheck ]; then 
+    sudo apt-get install -y curl
+fi
+
+if [ -z $sedcheck ]; then 
+    sudo apt-get install -y sed
+fi
+
+sudo apt-get install -y vim
+
+echo "[$FUNCNAME] Configuring vim..."
+cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
+printf "\n" >> /home/$USER/.bashrc
+cat $PARENT_PATH/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
+
+echo "[$FUNCNAME] Setting up vim plugins..."
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim +PlugInstall +qall
+
+sed -i '16s/" //' /home/$USER/.vimrc
+sed -i '17s/" //' /home/$USER/.vimrc
+}
+
+
+# ------------------------------------------------------------------ SCRIPT FUNCTIONS ----
 
 script_help()
 {
