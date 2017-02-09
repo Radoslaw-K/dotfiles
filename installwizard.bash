@@ -437,25 +437,28 @@ script_help()
 {
 echo "------------------------------------------------------------------------------------
 Usage:
-    ${0} COMMAND [OPTION] 
-    ** See below for available options **
+    ${0} COMMAND COMMAND_OPTION
+    ** See below for available COMMAND(s) **
 OR
     source ${0}
     ** Available commands will be printed after the script is sourced **
 
 
 Available COMMAND(s):
-    all              [-h | --help]
-    bashrc_extras    [-h | --help]
-    build_tools      [-h | --help]
-    extras           [-h | --help]
-    general          [-h | --help]
-    git              [-h | --help]
-    prompt_strings   [-h | --help]
-    python_tools     [-h | --help]
-    sqlite3          [-h | --help]
-    vim              [-h | --help]
-    help             [-h | --help]
+    all
+    bashrc_extras
+    build_tools
+    extras
+    general
+    git
+    prompt_strings
+    python_tools
+    sqlite3
+    vim
+    help
+
+For available COMMAND_OPTION(s) please run:
+    COMMAND -h
 "
 }
 
@@ -479,7 +482,7 @@ echo "--------------------------------------------------------------------------
 [ERROR]
     Not allowed to run the script as: $USER.
     Please log in as a different user."
-exit 1
+return 1
 fi 
 
 
@@ -493,6 +496,13 @@ Available installation commands:
 $(script_list_functions)"
 
 else
+
+if [[ $# -ne 2 ]]; then
+    echo "Incorrect amount of arguments passed to the script."
+    echo ""
+    script_help
+    exit 1
+    fi
 
 case $1 in
     all)
