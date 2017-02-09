@@ -251,21 +251,46 @@ case $1 in
 install_general()
 {
 
-if [[ $# -eq 1 ]]; then
+PACKAGES="\
+    httpie \
+    inotify-tools \
+    terminator \
+    tree \
+    screen \
+    silversearcher-ag \
+    strace"
+
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
+
 case $1 in
+    -i | --install)
+        sudo apt-get install -y ${PACKAGES}
+        ;;
+
+    -u | --uninstall)
+        sudo apt autoremove -y ${PACKAGES}
+        ;;
+
     -h | --help)
-        echo this is bla
-	exit 0
+        echo "This function installs fun packages."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        return 0
         ;;
+
     *)
-        echo incorrect arg
-        exit 1
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
         ;;
-esac
-fi
-
-
-sudo apt-get -y install tree httpie terminator silversearcher-ag strace screen inotify-tools
+    esac
 }
 
 
