@@ -13,6 +13,7 @@ cd "$PARENT_PATH"
 
 check_is_installed()
 {
+
 FUNCTION=$1
 FILE=$2
 DESTINATION=$3
@@ -39,6 +40,7 @@ else
 
 check_uninstall()
 {
+
 FUNCTION=$1
 FILE=$2
 DESTINATION=$3
@@ -140,7 +142,6 @@ case $1 in
         echo "Use -h or --help for usage information"
         return 1
         ;;
-
     esac
 }
 
@@ -202,30 +203,48 @@ case $1 in
         echo "Use -h or --help for usage information"
         return 1
         ;;
-esac
-
-
+    esac
 }
 
 
 install_extras()
 {
 
-if [[ $# -eq 1 ]]; then
+PACKAGES="\
+    cmatrix \
+    redshift"
+
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
+
 case $1 in
+    -i | --install)
+        sudo apt-get install -y ${PACKAGES}
+        ;;
+
+    -u | --uninstall)
+        sudo apt autoremove -y ${PACKAGES}
+        ;;
+
     -h | --help)
-        echo this is bla
-	exit 0
+        echo "This function installs fun packages."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        return 0
         ;;
+
     *)
-        echo incorrect arg
-        exit 1
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
         ;;
-esac
-fi
-
-
-sudo apt-get install -y cmatrix redshift
+    esac
 }
 
 
@@ -476,9 +495,7 @@ printf "$func_list\n"
 }
 
 
-
-# ---------------------------------------- MAIN ---------------------------------------- #
-
+# ------------------------------------------------------------------------------ MAIN ----
 
 if [ $USER == "root" ]; then
 echo "------------------------------------------------------------------------------------
