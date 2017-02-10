@@ -149,28 +149,30 @@ case $1 in
 install_build_tools()
 {
 
-PACKAGES="\
-    automake \
-    autotools-dev \
-    bison \
-    build-essential \
-    chrpath \
-    cmake \
-    diffstat \
-    flex \
-    gawk \
-    gcc-multilib \
-    git-core \
-    gperf \
-    libglib2.0-dev \
-    libpixman-1-dev \
-    libsdl1.2-dev \
-    libtool \
-    socat \
-    unzip \
-    texinfo \
-    xterm \
-    zlib1g-dev"
+PACKAGES=\
+"
+automake         : A tool for automatically generating Makefile.in files.
+autotools-dev    : Tools to create a portable, complete, and self-contained GNU Build System.
+bison            : A general-purpose parser generator.
+build-essential  : Compilers, libraries and other build utilities.
+chrpath          : Allows you to modify the dynamic library load path (rpath and runpath) of compiled programs and libraries.
+cmake            : A cross platform build system generator (build system that makes othe build systems).
+diffstat         : Make histogram from diff-output.
+flex             : Generates programs that perform pattern-matching on text.
+gawk             : Pattern scanning and processing language.
+gcc-multilib     : Library for cross compiling.
+git-core         : Old name for git package.
+gperf            : Perfect hash function generator.
+libglib2.0-dev   : Low level core system libraries.
+libpixman-1-dev  : Low level library for pixel manipulation.
+libsdl1.2-dev    : Provides access to low level hardware via openGL and Direct3D.
+libtool          : Generic library support script.
+socat            : A relay for bidirectional data transfer between two independent data channels.
+unzip            : Provides utility to unpack zip archives.
+texinfo          : Provides the official documentation format of the GNU project.
+xterm            : A terminal emulator for the X Window System.
+zlib1g-dev       : A library implementing the deflate compression method found in gzip and PKZIP.
+"
 
 if [[ $# -ne 1 ]]; then
     echo [$FUNCNAME] requires 1 argument.
@@ -179,22 +181,24 @@ if [[ $# -ne 1 ]]; then
 
 case $1 in
     -i | --install)
-        sudo apt-get install -y ${PACKAGES}
+        sudo apt-get install -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -u | --uninstall)
-        sudo apt autoremove -y ${PACKAGES}
+        sudo apt autoremove -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -h | --help)
-        echo "This function installs libraries and tools needed for building"
-        echo "applications from source"
+        echo "This function installs libraries and tools needed for building packages from source."
         echo "Usage: $FUNCNAME [OPTION]"
         echo ""
         echo "OPTION(s):"
         echo "    -i | --install"
         echo "    -u | --uninstall"
         echo "    -h | --help"
+        echo ""
+        echo "List of packages to be installed:"
+        echo "$(echo "$PACKAGES" | awk -F: '{ print }')"
         return 0
         ;;
 
@@ -210,9 +214,11 @@ case $1 in
 install_extras()
 {
 
-PACKAGES="\
-    cmatrix \
-    redshift"
+PACKAGES=\
+"
+cmatrix  : Animation from the movie The Matrix.
+redshift : Adjusts light and color intensity on the screen.
+"
 
 if [[ $# -ne 1 ]]; then
     echo [$FUNCNAME] requires 1 argument.
@@ -221,11 +227,11 @@ if [[ $# -ne 1 ]]; then
 
 case $1 in
     -i | --install)
-        sudo apt-get install -y ${PACKAGES}
+        sudo apt-get install -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -u | --uninstall)
-        sudo apt autoremove -y ${PACKAGES}
+        sudo apt autoremove -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -h | --help)
@@ -236,6 +242,9 @@ case $1 in
         echo "    -i | --install"
         echo "    -u | --uninstall"
         echo "    -h | --help"
+        echo ""
+        echo "List of packages to be installed:"
+        echo "$(echo "$PACKAGES" | awk -F: '{ print }')"
         return 0
         ;;
 
@@ -251,14 +260,16 @@ case $1 in
 install_general()
 {
 
-PACKAGES="\
-    httpie \
-    inotify-tools \
-    terminator \
-    tree \
-    screen \
-    silversearcher-ag \
-    strace"
+PACKAGES=\
+"
+httpie              : Perfect for painless debugging and interaction with HTTP servers.
+inotify-tools       : Monitoring of directory and file events.
+terminator          : Awesome terminal emulator.
+tree                : Recursive directory listing.
+screen              : A tool to share terminal session/s.
+silversearcher-ag   : Global file and word searcher.
+strace              : A tool for tracing and deep debuging of code.
+"
 
 if [[ $# -ne 1 ]]; then
     echo [$FUNCNAME] requires 1 argument.
@@ -267,21 +278,24 @@ if [[ $# -ne 1 ]]; then
 
 case $1 in
     -i | --install)
-        sudo apt-get install -y ${PACKAGES}
+        sudo apt-get install -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -u | --uninstall)
-        sudo apt autoremove -y ${PACKAGES}
+        sudo apt autoremove -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
         ;;
 
     -h | --help)
-        echo "This function installs fun packages."
+        echo "This function installs useful packages for development and general use."
         echo "Usage: $FUNCNAME [OPTION]"
         echo ""
         echo "OPTION(s):"
         echo "    -i | --install"
         echo "    -u | --uninstall"
         echo "    -h | --help"
+        echo ""
+        echo "List of packages to be installed:"
+        echo "$(echo "$PACKAGES" | awk -F: '{ print }')"
         return 0
         ;;
 
