@@ -391,19 +391,8 @@ case $1 in
 install_prompt_strings()
 {
 
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
+FILE="bashrc_gitps.update"
+DESTINATION="/home/$USER/.bashrc"
 
 USER_GIT_PS_LOCATION=8
 USER_PS_LOCATION=11
@@ -416,19 +405,86 @@ if [ -z $teecheck ]; then
     sudo apt-get install -y tee
 fi
 
-echo "[$FUNCNAME] Installing prompt string for user: $USER..."
-printf "\n" >> /home/$USER/.bashrc
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
 
-if [ -z $gitcheck ]; then
-    echo "[$FUNCNAME] Git not found on the system, will not be part of the string..."
-    cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $USER_PS_LOCATION | tail -n 1 >> /home/$USER/.bashrc
-else
-    cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $USER_GIT_PS_LOCATION | tail -n 1 >> /home/$USER/.bashrc
-fi
+case $1 in
+    -i | --install)
+        check_is_installed $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
 
-echo "[$FUNCNAME] Installing prompt string for user: root..."
-printf "\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/includes/bashrc_gitps.update | head -n $ROOT_PS_LOCATION | tail -n 1 | sudo tee --append /root/.bashrc > /dev/null
+        echo "[$FUNCNAME] Installing prompt string for user: $USER..."
+        printf "\n" >> $DESTINATION
+
+        echo "### $FILE {" >> $DESTINATION
+        printf "\n" >> $DESTINATION
+        echo "# Custom Prompt string" >> $DESTINATION
+
+        if [ -z $gitcheck ]; then
+            echo "[$FUNCNAME] Git not found on the system, will not be part of the string..."
+            cat $PARENT_PATH/includes/bashrc_gitps.update \
+                | head -n $USER_PS_LOCATION | tail -n 1 >> $DESTINATION
+        else
+            cat $PARENT_PATH/includes/bashrc_gitps.update \
+                | head -n $USER_GIT_PS_LOCATION | tail -n 1 >> $DESTINATION
+        fi
+
+        printf "\n" >> $DESTINATION
+        echo "### } $FILE" >> $DESTINATION
+
+        echo "[$FUNCNAME] Installing prompt string for user: root..."
+        printf "\n" | sudo tee --append /root/.bashrc > /dev/null
+
+        echo "### $FILE {" | sudo tee --append /root/.bashrc > /dev/null
+
+        printf "\n" | sudo tee --append /root/.bashrc > /dev/null
+
+        echo "# Custom Prompt string" | sudo tee --append /root/.bashrc > /dev/null
+
+        cat $PARENT_PATH/includes/bashrc_gitps.update \
+            | head -n $ROOT_PS_LOCATION | tail -n 1 | sudo tee --append /root/.bashrc > /dev/null
+        printf "\n" | sudo tee --append /root/.bashrc > /dev/null
+
+        echo "### } $FILE" | sudo tee --append /root/.bashrc > /dev/null
+        ;;
+
+    -u | --uninstall)
+        sed -i '/### '"$FILE"' {/,/### } '"$FILE"'/d' $DESTINATION
+        if [[ -z $(tail -n 1 $DESTINATION) ]]; then
+            sed -i '$ d' $DESTINATION
+            fi
+
+        sudo sed -i '/### '"$FILE"' {/,/### } '"$FILE"'/d' /root/.bashrc
+        if [[ -z $(sudo tail -n 1 /root/.bashrc) ]]; then
+            sudo sed -i '$ d' /root/.bashrc
+            fi
+        ;;
+
+    -h | --help)
+        echo "This function installs custom prompt strings for user and root."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        echo ""
+        return 0
+        ;;
+
+    *)
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
+        ;;
+    esac
+
+
+
 }
 
 
