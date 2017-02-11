@@ -482,33 +482,63 @@ case $1 in
         return 1
         ;;
     esac
-
-
-
 }
 
 
 install_python_tools()
 {
 
-if [[ $# -eq 1 ]]; then
+PACKAGES=\
+"
+python-dev  : Python API.
+python3-dev : Python3 API.
+python-pip  : Python package manager.
+"
+
+PIP_PACKAGES=\
+"
+flake8   : Python code style enforcer.
+coverage : Python stats about test code
+ipython  : Improved interactive python shell.
+pexpect  : Python tool for controlling other applications.
+"
+
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
+
 case $1 in
+    -i | --install)
+        sudo apt-get install -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
+        sudo pip install $(echo "$PIP_PACKAGES" | awk -F: '{ print $1 }')
+        ;;
+
+    -u | --uninstall)
+        sudo pip uninstall -y $(echo "$PIP_PACKAGES" | awk -F: '{ print $1 }')
+        sudo apt autoremove -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
+        ;;
+
     -h | --help)
-        echo this is bla
-	exit 0
+        echo "This function installs useful python packages for development."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        echo ""
+        echo "List of packages to be installed:"
+        echo "$(echo "$PIP_PACKAGES" | awk -F: '{ print }')"
+        return 0
         ;;
+
     *)
-        echo incorrect arg
-        exit 1
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
         ;;
-esac
-fi
-
-
-sudo apt-get install -y python-dev
-sudo apt-get install -y python3-dev
-sudo apt-get install -y python-pip
-sudo pip install flake8 coverage ipython pexpect
+    esac
 }
 
 
