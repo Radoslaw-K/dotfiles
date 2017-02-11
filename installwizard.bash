@@ -545,24 +545,49 @@ case $1 in
 install_sqlite3()
 {
 
-if [[ $# -eq 1 ]]; then
+PACKAGES=\
+"
+sqlite3  : Small time database protocol.
+"
+
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
+
 case $1 in
+    -i | --install)
+        sudo apt-get install -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
+
+        echo "[$FUNCNAME] Configuring sqlite3..."
+        cp $PARENT_PATH/dotfiles/.sqliterc /home/$USER/
+        ;;
+
+    -u | --uninstall)
+        sudo apt autoremove -y $(echo "$PACKAGES" | awk -F: '{ print $1 }')
+        rm /home/$USER/.sqliterc
+        ;;
+
     -h | --help)
-        echo this is bla
-	exit 0
+        echo "This function installs sqlite3 database protocol."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        echo ""
+        echo "List of packages to be installed:"
+        echo "$(echo "$PACKAGES" | awk -F: '{ print }')"
+        return 0
         ;;
+
     *)
-        echo incorrect arg
-        exit 1
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
         ;;
-esac
-fi
-
-
-sudo apt-get install -y sqlite3
-
-echo "[$FUNCNAME] Configuring sqlite3..."
-cp $PARENT_PATH/dotfiles/.sqliterc /home/$USER/
+    esac
 }
 
 
