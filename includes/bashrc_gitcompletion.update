@@ -1,0 +1,6 @@
+### THIS_FILENAME {
+
+# Use GIT prompt string extension
+source ~/.git-prompt.sh
+
+### } THIS_FILENAME

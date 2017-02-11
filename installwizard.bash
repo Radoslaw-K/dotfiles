@@ -311,48 +311,80 @@ case $1 in
 install_git()
 {
 
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
+FILE="bashrc_gitcompletion.update"
+DESTINATION="/home/$USER/.bashrc"
 
 vimcheck=$(vim --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 curlcheck=$(curl --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 
-if [ -z $curlcheck ]; then 
+if [ -z $curlcheck ]; then
     sudo apt-get install -y curl
 fi
 
-sudo apt-get install -y git
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
 
-echo "[$FUNCNAME] Configuring git..."
-git config --global user.name Radoslaw Kieltyka
-git config --global user.email rkieltyka@dataplicity.com
-git config credential.helper 'cache --timeout=9000'
+case $1 in
+    -i | --install)
+        check_is_installed $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
 
-git remote add wf-specialproj-pub https://github.com/wildfoundry/specialprojects-public
-git remote add wf-specialproj-priv https://github.com/wildfoundry/specialprojects
-git remote add wf-wfos https://github.com/wildfoundry/wf-os
-git remote add rados https://github.com/Radoslaw-K/rados
+        sudo apt-get install -y git
+        echo "[$FUNCNAME] Configuring git..."
+        git config --global user.name Radoslaw Kieltyka
+        git config --global user.email rkieltyka@dataplicity.com
+        git config credential.helper 'cache --timeout=9000'
+        git remote add wf-specialproj-pub https://github.com/wildfoundry/specialprojects-public
+        git remote add wf-specialproj-priv https://github.com/wildfoundry/specialprojects
+        git remote add wf-wfos https://github.com/wildfoundry/wf-os
+        git remote add rados https://github.com/Radoslaw-K/rados
+        curl -o ~/.git-prompt.sh \
+                https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+        printf "\n" >> $DESTINATION
+        sed s/THIS_FILENAME/$FILE/g  $PARENT_PATH/includes/$FILE >> $DESTINATION
+        if [ $vimcheck == "VIM" ]; then 
+            git config --global core.editor vim
+            fi
+        ;;
 
-curl -o ~/.git-prompt.sh \
-        https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+    -u | --uninstall)
+        echo "[$FUNCNAME] Uninstalling git..."
+        sudo apt autoremove -y git
+        rm ~/.git-prompt.sh
+        rm ~/.gitconfig
+        check_uninstall $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
 
-printf "\n" >> /home/$USER/.bashrc
-printf "source ~/.git-prompt.sh\n" >> /home/$USER/.bashrc
+        sed -i '/### '"$FILE"' {/,/### } '"$FILE"'/d' $DESTINATION
+        if [[ -z $(tail -n 1 $DESTINATION) ]]; then
+            sed -i '$ d' $DESTINATION
+            fi
+        ;;
 
-if [ $vimcheck == "VIM" ]; then 
-    git config --global core.editor vim
-fi
+    -h | --help)
+        echo "This function installs git version control along with custom configuration."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        echo ""
+        return 0
+        ;;
+
+    *)
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
+        ;;
+    esac
 }
 
 
