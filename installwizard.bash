@@ -594,19 +594,8 @@ case $1 in
 install_vim()
 {
 
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
+FILE="bashrc_vimrc.update"
+DESTINATION="/home/$USER/.bashrc"
 
 curlcheck=$(curl --version 2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
 sedcheck=$(sed --version  2>/dev/null | head -n 1 | tr " " "\n" | head -n 1)
@@ -619,19 +608,65 @@ if [ -z $sedcheck ]; then
     sudo apt-get install -y sed
 fi
 
-sudo apt-get install -y vim
+if [[ $# -ne 1 ]]; then
+    echo [$FUNCNAME] requires 1 argument.
+    return 1
+    fi
 
-echo "[$FUNCNAME] Configuring vim..."
-cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
-printf "\n" >> /home/$USER/.bashrc
-cat $PARENT_PATH/includes/bashrc_vimrc.update >> /home/$USER/.bashrc
+case $1 in
+    -i | --install)
+        check_is_installed $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
 
-echo "[$FUNCNAME] Setting up vim plugins..."
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-vim +PlugInstall +qall
+        sudo apt-get install -y vim
+        echo "[$FUNCNAME] Configuring vim..."
+        cp $PARENT_PATH/dotfiles/.vimrc /home/$USER/
+        printf "\n" >> $DESTINATION
+        sed s/THIS_FILENAME/$FILE/g  $PARENT_PATH/includes/$FILE >> $DESTINATION
+        echo "[$FUNCNAME] Setting up vim plugins..."
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        vim +PlugInstall +qall
+        sed -i '16s/" //' /home/$USER/.vimrc
+        sed -i '17s/" //' /home/$USER/.vimrc
+        ;;
 
-sed -i '16s/" //' /home/$USER/.vimrc
-sed -i '17s/" //' /home/$USER/.vimrc
+    -u | --uninstall)
+        echo "[$FUNCNAME] Uninstalling vim..."
+        sudo apt autoremove -y vim
+        sudo rm -r /home/$USER/.vim
+        rm /home/$USER/.vimrc
+        check_uninstall $FUNCNAME $FILE $DESTINATION
+        if [[ $? -eq 1 ]]; then
+            return 1
+            fi
+
+        sed -i '/### '"$FILE"' {/,/### } '"$FILE"'/d' $DESTINATION
+        if [[ -z $(tail -n 1 $DESTINATION) ]]; then
+            sed -i '$ d' $DESTINATION
+            fi
+        ;;
+
+    -h | --help)
+        echo "This function installs vim text editor along with custom configuration."
+        echo "Usage: $FUNCNAME [OPTION]"
+        echo ""
+        echo "OPTION(s):"
+        echo "    -i | --install"
+        echo "    -u | --uninstall"
+        echo "    -h | --help"
+        echo ""
+        return 0
+        ;;
+
+    *)
+        echo "[$FUNCNAME] Incorrect argument"
+        echo "Use -h or --help for usage information"
+        return 1
+        ;;
+    esac
 }
 
 
