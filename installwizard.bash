@@ -67,28 +67,6 @@ else
 
 # ------------------------------------------------------------ INSTALLATION FUNCTIONS ----
 
-install_all()
-{
-
-if [[ $# -eq 1 ]]; then
-case $1 in
-    -h | --help)
-        echo this is bla
-	exit 0
-        ;;
-    *)
-        echo incorrect arg
-        exit 1
-        ;;
-esac
-fi
-
-
-# $(script_list_functions)
-# bash -c "source ${0} &&  $(script_list_functions)"
-echo "This option has not been implemented yet. $2"
-}
-
 
 install_bashrc_extras()
 {
@@ -743,8 +721,51 @@ if [[ $# -ne 2 ]]; then
 
 case $1 in
     all)
-        install_all $2
+        if [[ $# -ne 2 ]]; then
+            echo Installer of all functions requires 1 argument.
+            return 1
+            fi
+
+        RAW_COMMANDS=$(script_list_functions)
+        COMMANDS=${RAW_COMMANDS//install_/}
+
+        case $2 in
+            -i | --install)
+                for CMD in $COMMANDS; do
+                     ${0} $CMD -i
+                    done
+                ;;
+
+            -u | --uninstall)
+                for CMD in $COMMANDS; do
+                     ${0} $CMD -u
+                    done
+                ;;
+
+            -h | --help)
+                echo "This function goes through every installation command."
+                echo "Usage: all [OPTION]"
+                echo ""
+                echo "OPTION(s):"
+                echo "    -i | --install"
+                echo "    -u | --uninstall"
+                echo "    -h | --help"
+                echo ""
+                echo "List of commands to be executed:"
+                for CMD in $COMMANDS; do
+                    echo "    $CMD"
+                    done
+                exit 0
+                ;;
+
+            *)
+                echo "[all] Incorrect argument"
+                echo "Use -h or --help for usage information"
+                exit 1
+                ;;
+            esac
         ;;
+
     bashrc_extras)
         install_bashrc_extras $2
         ;;
